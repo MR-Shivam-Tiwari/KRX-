@@ -4,11 +4,9 @@ import { motion } from 'motion/react';
 interface ServicesProps {
   services: Service[];
   onSelectService: (service: Service) => void;
-  onAddToCart: (service: Service) => void;
-  isInCart: (id: string) => boolean;
 }
 
-export default function Services({ services, onSelectService, onAddToCart, isInCart }: ServicesProps) {
+export default function Services({ services, onSelectService }: ServicesProps) {
   return (
     <section 
       id="services" 
@@ -19,10 +17,10 @@ export default function Services({ services, onSelectService, onAddToCart, isInC
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="max-w-2xl">
             <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-stone-900 leading-[1.15] uppercase">
-              Discover Premium Essentials<br />at KRX
+              Discover Tailored Services<br />at KRX
             </h2>
             <p className="mt-4 text-stone-600 text-sm md:text-base leading-relaxed font-light">
-              Explore our curated selection of top-quality performance-driven services designed to scale your commercial output.
+              Explore our performance-driven capabilities designed to scale your commercial output and optimize client conversion pipelines.
             </p>
           </div>
           <div>
@@ -33,7 +31,7 @@ export default function Services({ services, onSelectService, onAddToCart, isInC
               }}
               className="px-7 py-3 bg-terracotta hover:bg-terracotta-hover text-white rounded-full text-xs font-bold tracking-[0.2em] uppercase transition-colors inline-block cursor-pointer whitespace-nowrap"
             >
-              Browse All Items
+              Inquire Today
             </button>
           </div>
         </div>
@@ -41,7 +39,6 @@ export default function Services({ services, onSelectService, onAddToCart, isInC
         {/* Minimalist Grid matching Screenshot 2 (Square edges, flat layout) - Balanced 3-column grid with wide images */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-16 gap-x-8 max-w-6xl mx-auto">
           {services.map((service, index) => {
-            const added = isInCart(service.id);
             return (
               <motion.div
                 key={service.id}
@@ -60,23 +57,13 @@ export default function Services({ services, onSelectService, onAddToCart, isInC
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover"
                   />
-                  
-                  {/* Selected Indicator Badge */}
-                  {added && (
-                    <div className="absolute top-3 left-3 bg-stone-900 text-white text-[9px] font-bold tracking-widest uppercase px-2.5 py-1">
-                      SELECTED
-                    </div>
-                  )}
                 </div>
 
                 {/* Info block - Aligned exactly like WooCommerce screenshot 2 */}
-                <div className="flex justify-between items-start pt-2">
+                <div className="pt-2">
                   <h3 className="text-base font-bold text-stone-900 tracking-tight leading-snug group-hover:text-terracotta transition-colors duration-200">
                     {service.title}
                   </h3>
-                  <span className="text-base font-bold text-stone-900 shrink-0 ml-4">
-                    {service.price}
-                  </span>
                 </div>
 
                 {/* Subtitle / Category matching the 'Uncategorized' label style */}
@@ -85,27 +72,15 @@ export default function Services({ services, onSelectService, onAddToCart, isInC
                 </p>
 
                 {/* Flat, Clean Call-To-Actions below metadata */}
-                <div className="mt-4 flex items-center gap-4 text-xs font-bold tracking-wider">
+                <div className="mt-4 flex items-center text-xs font-bold tracking-wider">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       onSelectService(service);
                     }}
-                    className="text-stone-500 hover:text-stone-900 transition-colors uppercase text-[10px]"
+                    className="text-stone-500 hover:text-stone-950 transition-colors uppercase text-[10px] flex items-center gap-1"
                   >
-                    View Details
-                  </button>
-                  <span className="text-stone-300 font-light">|</span>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onAddToCart(service);
-                    }}
-                    className={`transition-colors uppercase text-[10px] ${
-                      added ? 'text-terracotta hover:text-stone-900' : 'text-stone-800 hover:text-terracotta'
-                    }`}
-                  >
-                    {added ? '✓ Selected' : '+ Select'}
+                    View Details &rarr;
                   </button>
                 </div>
               </motion.div>

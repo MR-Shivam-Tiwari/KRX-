@@ -1,15 +1,14 @@
 import { Service } from '../data';
-import { X, Check, ShoppingBag, ShoppingCart } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface ServiceDetailModalProps {
   service: Service | null;
   onClose: () => void;
-  onAddToCart: (service: Service) => void;
-  isInCart: boolean;
+  onInquire: (service: Service) => void;
 }
 
-export default function ServiceDetailModal({ service, onClose, onAddToCart, isInCart }: ServiceDetailModalProps) {
+export default function ServiceDetailModal({ service, onClose, onInquire }: ServiceDetailModalProps) {
   if (!service) return null;
 
   return (
@@ -58,14 +57,14 @@ export default function ServiceDetailModal({ service, onClose, onAddToCart, isIn
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6">
           
-          {/* Investment Price Row */}
+          {/* Service Meta Row */}
           <div className="flex justify-between items-center bg-stone-50 p-4 rounded-xl border border-stone-100">
             <div>
               <span className="text-[10px] font-bold text-stone-400 tracking-wider uppercase block">
-                Standard Retainer / Investment
+                Service Level
               </span>
-              <span className="text-xl font-extrabold text-stone-900 mt-0.5 block">
-                {service.price}
+              <span className="text-sm font-bold text-stone-800 mt-0.5 block">
+                Premium Bespoke Framework
               </span>
             </div>
             <div className="text-right">
@@ -110,37 +109,12 @@ export default function ServiceDetailModal({ service, onClose, onAddToCart, isIn
         </div>
 
         {/* Bottom Action Footer */}
-        <div className="p-6 border-t border-stone-100 bg-stone-50/50 flex flex-col sm:flex-row items-center gap-4">
+        <div className="p-6 border-t border-stone-100 bg-stone-50/50 flex items-center justify-center">
           <button
-            onClick={() => {
-              onAddToCart(service);
-            }}
-            className={`w-full sm:flex-1 py-3.5 px-6 rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-              isInCart 
-                ? 'bg-stone-900 hover:bg-stone-800 text-white' 
-                : 'bg-terracotta hover:bg-terracotta-hover text-white shadow-md shadow-terracotta/10 hover:shadow-terracotta/20'
-            }`}
+            onClick={() => onInquire(service)}
+            className="w-full py-4 bg-terracotta hover:bg-terracotta-hover text-white text-xs font-bold tracking-[0.2em] uppercase rounded-full transition-colors cursor-pointer text-center shadow-md shadow-terracotta/10 hover:shadow-terracotta/20"
           >
-            <ShoppingCart className="h-3.5 w-3.5" />
-            {isInCart ? 'Remove Selection' : 'Select Service'}
-          </button>
-          
-          <button
-            onClick={() => {
-              // Add to cart first if not already inside
-              if (!isInCart) {
-                onAddToCart(service);
-              }
-              onClose();
-              // Scroll directly to contact
-              setTimeout(() => {
-                const el = document.getElementById('contact');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }, 100);
-            }}
-            className="w-full sm:w-auto px-6 py-3.5 bg-white border border-stone-200 hover:border-stone-300 hover:bg-stone-50 text-stone-800 text-xs font-bold tracking-widest uppercase rounded-full transition-colors cursor-pointer"
-          >
-            Inquire Now
+            Inquire About This Service
           </button>
         </div>
       </motion.div>

@@ -42,6 +42,12 @@ export default function Contact({ preselectedServices, onClearPreselectedService
     }
   }, []);
 
+  useEffect(() => {
+    if (preselectedServices.length > 0) {
+      setSubject(`Inquiry regarding: ${preselectedServices[0]}`);
+    }
+  }, [preselectedServices]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !subject.trim()) {
@@ -94,50 +100,22 @@ export default function Contact({ preselectedServices, onClearPreselectedService
       id="contact" 
       className="py-24 bg-beige-warm border-t border-stone-200/50"
     >
-      <div className="max-w-7xl mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
+      <div className="max-w-3xl mx-auto px-6 md:px-12">
+        <div className="w-full">
           
-          {/* Left Column: Flat, clean contact form matching Screenshot 3 perfectly */}
-          <div className="lg:col-span-6">
-            <div className="mb-10">
+          {/* Centered Flat, clean contact form matching style perfectly */}
+          <div>
+            <div className="mb-10 text-center">
               <span className="text-terracotta text-xs font-bold tracking-[0.25em] uppercase">
                 Let's Partner Up
               </span>
               <h3 className="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight mt-2 uppercase">
                 Initiate Your Project
               </h3>
-              <p className="text-stone-600 text-sm font-light mt-3 leading-relaxed">
+              <p className="text-stone-600 text-sm font-light mt-3 leading-relaxed max-w-xl mx-auto">
                 Submit your inquiry details below. Our specialists will review your project parameters and respond within 12 business hours.
               </p>
             </div>
-
-            {/* Selected items notification */}
-            {preselectedServices.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-8 p-5 bg-white border border-stone-200"
-              >
-                <div className="flex justify-between items-center mb-3">
-                  <span className="text-xs font-bold text-stone-800 tracking-wider uppercase">
-                    Selected Items for Inquiry ({preselectedServices.length}):
-                  </span>
-                  <button 
-                    onClick={onClearPreselectedServices}
-                    className="text-[11px] text-terracotta hover:underline font-bold uppercase tracking-wider"
-                  >
-                    Clear All
-                  </button>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {preselectedServices.map(service => (
-                    <span key={service} className="text-[10px] font-bold bg-stone-100 text-stone-700 px-3 py-1 border border-stone-200/60 uppercase tracking-wider">
-                      {service}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            )}
 
             {/* Error Message */}
             {submitError && (
@@ -258,50 +236,6 @@ export default function Contact({ preselectedServices, onClearPreselectedService
                 </button>
               </div>
             )}
-          </div>
-
-          {/* Right Column: Sharp, pristine corporate office/visualization block, matching Screenshot 3 */}
-          <div className="lg:col-span-6 flex flex-col h-full justify-between">
-            <div className="relative aspect-[4/3] lg:aspect-[1.15] border border-stone-200 bg-stone-900 overflow-hidden">
-              {/* High-end office meeting illustration matching the 'DIGITAL HUB' visual theme */}
-              <img
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80"
-                alt="KRX Corporate Boardroom"
-                referrerPolicy="no-referrer"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-stone-950/20" />
-            </div>
-
-            {/* Location details below photo - clean & authentic */}
-            <div className="mt-6 border-l-2 border-terracotta pl-4">
-              <h4 className="text-xs font-bold text-stone-900 tracking-[0.15em] uppercase">
-                KRX Headquarters
-              </h4>
-              <p className="text-stone-500 text-xs mt-1 font-light">
-                Central Corporate Suite • Global Interface Network
-              </p>
-            </div>
-
-            {/* Information Grid */}
-            <div className="grid grid-cols-2 gap-4 mt-8">
-              <div className="bg-white p-6 border border-stone-200">
-                <span className="text-[10px] font-bold text-stone-400 tracking-wider block uppercase">
-                  Direct Inquiries
-                </span>
-                <span className="text-xs font-bold text-stone-800 mt-1 block">
-                  hello@krxagency.com
-                </span>
-              </div>
-              <div className="bg-white p-6 border border-stone-200">
-                <span className="text-[10px] font-bold text-stone-400 tracking-wider block uppercase">
-                  Active Hours
-                </span>
-                <span className="text-xs font-bold text-stone-800 mt-1 block">
-                  Mon - Fri • 9am - 6pm UTC
-                </span>
-              </div>
-            </div>
           </div>
 
         </div>

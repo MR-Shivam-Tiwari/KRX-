@@ -8,14 +8,12 @@ import Hero from './components/Hero';
 import Services from './components/Services';
 import Testimonials from './components/Testimonials';
 import Contact from './components/Contact';
-import CartDrawer from './components/CartDrawer';
 import ServiceDetailModal from './components/ServiceDetailModal';
 import Footer from './components/Footer';
 
 export default function App() {
-  // Cart state (Inquiry bundle)
+  // Current active inquiry item
   const [cartItems, setCartItems] = useState<Service[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
   // Detail Modal state
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -28,40 +26,23 @@ export default function App() {
     }
   };
 
-  // Toggle selection of service in cart
-  const handleAddToCart = (service: Service) => {
-    const isAlreadyInCart = cartItems.some((item) => item.id === service.id);
-    if (isAlreadyInCart) {
-      setCartItems((prev) => prev.filter((item) => item.id !== service.id));
-    } else {
-      setCartItems((prev) => [...prev, service]);
-    }
-  };
-
-  const handleRemoveFromCart = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  const handleInquire = (service: Service) => {
+    setCartItems([service]);
+    setSelectedService(null);
+    setTimeout(() => {
+      handleScrollToSection('contact');
+    }, 100);
   };
 
   const handleClearCart = () => {
     setCartItems([]);
   };
 
-  const handleProceedToInquiry = () => {
-    setIsCartOpen(false);
-    setTimeout(() => {
-      handleScrollToSection('contact');
-    }, 200);
-  };
-
-  const isInCart = (id: string) => cartItems.some((item) => item.id === id);
-
   return (
     <div className="relative min-h-screen bg-white text-stone-900 selection:bg-terracotta/20 selection:text-terracotta">
       
       {/* Header / Navigation */}
       <Header 
-        cartCount={cartItems.length}
-        onOpenCart={() => setIsCartOpen(true)}
         onScrollToSection={handleScrollToSection}
       />
 
@@ -75,8 +56,6 @@ export default function App() {
         <Services 
           services={SERVICES}
           onSelectService={(service) => setSelectedService(service)}
-          onAddToCart={handleAddToCart}
-          isInCart={isInCart}
         />
 
         {/* Section 3: Centered Testimonials Grid (White background, stars, avatars) */}
@@ -95,24 +74,12 @@ export default function App() {
 
       {/* Overlays / Slide-overs */}
       <AnimatePresence>
-        {/* Slide-over Right Cart Drawer */}
-        {isCartOpen && (
-          <CartDrawer 
-            isOpen={isCartOpen}
-            onClose={() => setIsCartOpen(false)}
-            cartItems={cartItems}
-            onRemoveFromCart={handleRemoveFromCart}
-            onProceedToInquiry={handleProceedToInquiry}
-          />
-        )}
-
         {/* Interactive Service Detail modal overlay */}
         {selectedService && (
           <ServiceDetailModal 
             service={selectedService}
             onClose={() => setSelectedService(null)}
-            onAddToCart={handleAddToCart}
-            isInCart={isInCart(selectedService.id)}
+            onInquire={handleInquire}
           />
         )}
       </AnimatePresence>

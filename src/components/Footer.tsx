@@ -110,7 +110,6 @@ export default function Footer({ onScrollToSection }: FooterProps) {
           <div className="flex items-center gap-6">
             <span className="hover:text-stone-600 cursor-pointer">Terms of Service</span>
             <span className="hover:text-stone-600 cursor-pointer">Privacy Protocol</span>
-            <span className="hover:text-stone-600 cursor-pointer">0.0.0.0 Access Node</span>
           </div>
         </div>
       </div>

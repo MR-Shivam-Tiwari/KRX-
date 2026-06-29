@@ -38,9 +38,9 @@ export default function Hero({ onScrollToSection }: HeroProps) {
 
           {/* Centered Large Title - Matching Screenshot 1 perfectly */}
           <h1 className="text-5xl sm:text-7xl md:text-8xl font-black text-white leading-[1.05] tracking-tight max-w-4xl select-none uppercase">
-            Explore Our<br />
-            Expertly Curated<br />
-            Selection
+            Bespoke<br />
+            Digital Services<br />
+            Built for Scale
           </h1>
           
           <p className="mt-8 text-stone-200 text-sm sm:text-base md:text-lg max-w-2xl font-light leading-relaxed tracking-wide">
@@ -68,7 +68,7 @@ export default function Hero({ onScrollToSection }: HeroProps) {
       {/* Subtle down scroll indicator */}
       <div 
         onClick={() => onScrollToSection('services')}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300 z-20"
+        className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 hidden sm:flex flex-col items-center gap-2 cursor-pointer opacity-70 hover:opacity-100 transition-opacity duration-300 z-20"
       >
         <span className="text-[10px] font-bold text-white tracking-[0.25em] uppercase">Scroll Down</span>
         <svg className="w-5 h-5 text-white animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">

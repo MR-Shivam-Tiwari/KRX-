@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 interface HeaderProps {
-  cartCount: number;
-  onOpenCart: () => void;
   onScrollToSection: (id: string) => void;
 }
 
-export default function Header({ cartCount, onOpenCart, onScrollToSection }: HeaderProps) {
+export default function Header({ onScrollToSection }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -31,7 +29,7 @@ export default function Header({ cartCount, onOpenCart, onScrollToSection }: Hea
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-        isScrolled 
+        isScrolled || mobileMenuOpen
           ? 'bg-white shadow-sm border-b border-stone-100 py-4' 
           : 'bg-transparent py-6'
       }`}
@@ -50,7 +48,7 @@ export default function Header({ cartCount, onOpenCart, onScrollToSection }: Hea
             </svg>
           </div>
           <span className={`text-sm sm:text-base font-extrabold tracking-[0.25em] uppercase transition-colors duration-300 ${
-            isScrolled ? 'text-stone-900' : 'text-white'
+            isScrolled || mobileMenuOpen ? 'text-stone-900' : 'text-white'
           }`}>
             KRX
           </span>
@@ -72,7 +70,7 @@ export default function Header({ cartCount, onOpenCart, onScrollToSection }: Hea
               isScrolled ? 'text-stone-600 hover:text-terracotta' : 'text-white/80 hover:text-white'
             }`}
           >
-            SHOP
+            SERVICES
           </button>
           <button
             onClick={() => handleNavClick('contact')}
@@ -81,21 +79,6 @@ export default function Header({ cartCount, onOpenCart, onScrollToSection }: Hea
             }`}
           >
             CONTACT
-          </button>
-          
-          {/* Cart Icon Link */}
-          <button
-            onClick={onOpenCart}
-            className={`relative p-2 rounded-full transition-colors cursor-pointer ${
-              isScrolled ? 'text-stone-700 hover:bg-stone-50' : 'text-white hover:bg-white/10'
-            }`}
-          >
-            <ShoppingCart className="h-4 w-4" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-terracotta text-white text-[9px] font-bold h-4.5 w-4.5 rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
-            )}
           </button>
         </nav>
 
@@ -109,29 +92,16 @@ export default function Header({ cartCount, onOpenCart, onScrollToSection }: Hea
                 : 'bg-white hover:bg-stone-50 text-stone-900'
             }`}
           >
-            Shop Now
+            Inquire Now
           </button>
         </div>
 
         {/* Mobile Hamburger / Cart Control */}
         <div className="flex items-center gap-4 md:hidden">
           <button
-            onClick={onOpenCart}
-            className={`relative p-2 rounded-full ${
-              isScrolled ? 'text-stone-700' : 'text-white'
-            }`}
-          >
-            <ShoppingCart className="h-4 w-4" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-terracotta text-white text-[9px] font-bold h-4.5 w-4.5 rounded-full flex items-center justify-center">
-                {cartCount}
-              </span>
-            )}
-          </button>
-          <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`p-2 rounded-full ${
-              isScrolled ? 'text-stone-700' : 'text-white'
+              isScrolled || mobileMenuOpen ? 'text-stone-700' : 'text-white'
             }`}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -139,25 +109,25 @@ export default function Header({ cartCount, onOpenCart, onScrollToSection }: Hea
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - Restored original simple layout with gap fix */}
       {mobileMenuOpen && (
-        <div className="md:hidden fixed inset-0 top-[72px] bg-white z-30 flex flex-col justify-between p-8 border-t border-stone-100">
+        <div className="md:hidden fixed top-16 left-0 right-0 bottom-0 bg-white z-30 flex flex-col justify-between p-8 border-t border-stone-100">
           <div className="flex flex-col gap-6">
             <button
               onClick={() => handleNavClick('hero')}
-              className="text-left text-sm font-bold tracking-[0.2em] text-stone-800 hover:text-terracotta py-2"
+              className="text-left text-sm font-bold tracking-[0.2em] text-stone-800 hover:text-terracotta py-2 cursor-pointer"
             >
               HOME
             </button>
             <button
               onClick={() => handleNavClick('services')}
-              className="text-left text-sm font-bold tracking-[0.2em] text-stone-800 hover:text-terracotta py-2"
+              className="text-left text-sm font-bold tracking-[0.2em] text-stone-800 hover:text-terracotta py-2 cursor-pointer"
             >
-              SHOP
+              SERVICES
             </button>
             <button
               onClick={() => handleNavClick('contact')}
-              className="text-left text-sm font-bold tracking-[0.2em] text-stone-800 hover:text-terracotta py-2"
+              className="text-left text-sm font-bold tracking-[0.2em] text-stone-800 hover:text-terracotta py-2 cursor-pointer"
             >
               CONTACT
             </button>
@@ -165,9 +135,9 @@ export default function Header({ cartCount, onOpenCart, onScrollToSection }: Hea
           <div className="flex flex-col gap-4">
             <button
               onClick={() => handleNavClick('services')}
-              className="w-full text-center bg-terracotta hover:bg-terracotta-hover text-white py-3.5 rounded-full text-xs font-bold tracking-widest uppercase transition-colors"
+              className="w-full text-center bg-terracotta hover:bg-terracotta-hover text-white py-3.5 rounded-full text-xs font-bold tracking-widest uppercase transition-colors cursor-pointer"
             >
-              Shop Now
+              Inquire Now
             </button>
           </div>
         </div>

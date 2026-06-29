@@ -12,10 +12,10 @@ export default function Testimonials() {
         {/* Centered Heading Block matching Screenshot 3 */}
         <div className="text-center max-w-3xl mx-auto mb-20">
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight text-stone-900 leading-tight">
-            Discover Top Products Effortlessly
+            Discover Client Success with KRX
           </h2>
           <p className="mt-4 text-stone-500 text-sm md:text-base leading-relaxed">
-            Hear directly from our customers about their positive experiences and satisfaction with KRX's offerings.
+            Hear directly from our clients about their exceptional growth and satisfaction partnering with KRX.
           </p>
         </div>
 
