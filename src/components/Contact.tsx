@@ -1,5 +1,5 @@
-import { useState, FormEvent, useEffect } from 'react';
-import { CheckCircle2, AlertCircle, History, Trash2, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowUpRight, Copy, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface ContactProps {
@@ -7,309 +7,97 @@ interface ContactProps {
   onClearPreselectedServices: () => void;
 }
 
-interface Inquiry {
-  id: string;
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  services: string[];
-  date: string;
-}
-
 export default function Contact({ preselectedServices, onClearPreselectedServices }: ContactProps) {
-  // Form states
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+  const emailAddress = "partners@krx.com";
+  const [copied, setCopied] = useState(false);
 
-  // Local storage inquiries history
-  const [inquiries, setInquiries] = useState<Inquiry[]>([]);
-  const [showHistory, setShowHistory] = useState(false);
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('krx_inquiries');
-      if (stored) {
-        setInquiries(JSON.parse(stored));
-      }
-    } catch (e) {
-      console.error('Error loading inquiries', e);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (preselectedServices.length > 0) {
-      setSubject(`Inquiry regarding: ${preselectedServices[0]}`);
-    }
-  }, [preselectedServices]);
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!name.trim() || !email.trim() || !subject.trim()) {
-      setSubmitError('Please fill out all required fields.');
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitError('');
-
-    // Simulate API call
-    setTimeout(() => {
-      try {
-        const newInquiry: Inquiry = {
-          id: 'inquiry-' + Date.now(),
-          name,
-          email,
-          subject,
-          message,
-          services: [...preselectedServices],
-          date: new Date().toLocaleString()
-        };
-
-        const updated = [newInquiry, ...inquiries];
-        localStorage.setItem('krx_inquiries', JSON.stringify(updated));
-        setInquiries(updated);
-
-        setSubmitSuccess(true);
-        setName('');
-        setEmail('');
-        setSubject('');
-        setMessage('');
-        onClearPreselectedServices();
-      } catch (err) {
-        setSubmitError('Failed to save inquiry. Please try again.');
-      } finally {
-        setIsSubmitting(false);
-      }
-    }, 1200);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(emailAddress);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleDeleteInquiry = (id: string) => {
-    const updated = inquiries.filter(i => i.id !== id);
-    localStorage.setItem('krx_inquiries', JSON.stringify(updated));
-    setInquiries(updated);
-  };
+  const mailtoUrl = preselectedServices.length > 0 
+    ? `mailto:${emailAddress}?subject=Inquiry regarding ${encodeURIComponent(preselectedServices[0])}&body=Hi KRX Team,%0A%0AI would like to discuss: ${encodeURIComponent(preselectedServices[0])}.`
+    : `mailto:${emailAddress}?subject=Project Consultation with KRX`;
 
   return (
     <section 
       id="contact" 
-      className="py-24 bg-beige-warm border-t border-stone-200/50"
+      className="py-24 bg-white border-t border-stone-200"
     >
-      <div className="max-w-3xl mx-auto px-6 md:px-12">
-        <div className="w-full">
-          
-          {/* Centered Flat, clean contact form matching style perfectly */}
-          <div>
-            <div className="mb-10 text-center">
-              <span className="text-terracotta text-xs font-bold tracking-[0.25em] uppercase">
-                Let's Partner Up
-              </span>
-              <h3 className="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight mt-2 uppercase">
-                Initiate Your Project
-              </h3>
-              <p className="text-stone-600 text-sm font-light mt-3 leading-relaxed max-w-xl mx-auto">
-                Submit your inquiry details below. Our specialists will review your project parameters and respond within 12 business hours.
-              </p>
-            </div>
+      <div className="max-w-2xl mx-auto px-6 text-center">
+        
+        <span className="text-terracotta text-xs font-bold tracking-[0.25em] uppercase block mb-4">
+          Contact us
+        </span>
+        
+        <h2 className="text-3xl md:text-4xl font-extrabold text-stone-900 tracking-tight uppercase mb-6">
+          Let's Work Together
+        </h2>
+        
+        <p className="text-stone-600 text-sm font-light leading-relaxed mb-10 max-w-md mx-auto">
+          Interested in a growth partnership or consulting with a specialist? Reach out directly via email. We read every message and respond within 12 business hours.
+        </p>
 
-            {/* Error Message */}
-            {submitError && (
-              <div className="mb-6 p-4 bg-red-50 text-red-700 text-xs rounded-none flex items-center gap-2 border border-red-100">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                <span>{submitError}</span>
-              </div>
-            )}
-
-            {/* Success Message */}
-            {submitSuccess ? (
-              <motion.div 
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="p-10 text-center bg-white border border-stone-200 flex flex-col items-center"
-              >
-                <CheckCircle2 className="h-12 w-12 text-terracotta mb-4" />
-                <h4 className="text-lg font-bold text-stone-900 uppercase tracking-wide">Inquiry Received</h4>
-                <p className="text-xs text-stone-500 mt-3 max-w-sm leading-relaxed">
-                  Thank you for reaching out. We have logged your parameters and will reply within 12 business hours.
-                </p>
-                <button
-                  onClick={() => setSubmitSuccess(false)}
-                  className="mt-6 text-xs text-terracotta font-bold hover:underline uppercase tracking-widest"
-                >
-                  Send another message
-                </button>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                
-                {/* Your name */}
-                <div>
-                  <label htmlFor="name" className="block text-[11px] font-bold text-stone-700 tracking-[0.2em] uppercase mb-2">
-                    Your name <span className="text-terracotta">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your full name"
-                    required
-                    className="w-full bg-white border border-stone-200 focus:border-stone-900 px-4 py-3.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none transition-all duration-200"
-                  />
-                </div>
-
-                {/* Your email */}
-                <div>
-                  <label htmlFor="email" className="block text-[11px] font-bold text-stone-700 tracking-[0.2em] uppercase mb-2">
-                    Your email <span className="text-terracotta">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@company.com"
-                    required
-                    className="w-full bg-white border border-stone-200 focus:border-stone-900 px-4 py-3.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none transition-all duration-200"
-                  />
-                </div>
-
-                {/* Subject */}
-                <div>
-                  <label htmlFor="subject" className="block text-[11px] font-bold text-stone-700 tracking-[0.2em] uppercase mb-2">
-                    Subject <span className="text-terracotta">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    placeholder="e.g. Redesign, custom consultation"
-                    required
-                    className="w-full bg-white border border-stone-200 focus:border-stone-900 px-4 py-3.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none transition-all duration-200"
-                  />
-                </div>
-
-                {/* Your message */}
-                <div>
-                  <label htmlFor="message" className="block text-[11px] font-bold text-stone-700 tracking-[0.2em] uppercase mb-2">
-                    Your message (optional)
-                  </label>
-                  <textarea
-                    id="message"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Describe your goals, current metrics, or timeline..."
-                    rows={4}
-                    className="w-full bg-white border border-stone-200 focus:border-stone-900 px-4 py-3.5 text-sm text-stone-900 placeholder-stone-400 focus:outline-none transition-all duration-200 resize-none"
-                  />
-                </div>
-
-                {/* Submit button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-4 bg-terracotta hover:bg-terracotta-hover disabled:bg-stone-400 text-white font-bold text-xs tracking-[0.2em] uppercase rounded-full transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-terracotta/10"
-                >
-                  {isSubmitting ? 'Sending Request...' : 'Send Message'}
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </button>
-              </form>
-            )}
-
-            {/* Submission History feature */}
-            {inquiries.length > 0 && (
-              <div className="mt-8 pt-6 border-t border-stone-200 flex items-center justify-between">
-                <span className="text-xs text-stone-500 font-light">
-                  {inquiries.length} saved local inquiry record{inquiries.length > 1 ? 's' : ''}
-                </span>
-                <button
-                  onClick={() => setShowHistory(!showHistory)}
-                  className="text-xs text-stone-700 hover:text-terracotta font-bold flex items-center gap-1.5 focus:outline-none cursor-pointer uppercase tracking-wider"
-                >
-                  {showHistory ? 'Hide Records' : 'View Records'}
-                </button>
-              </div>
-            )}
-          </div>
-
-        </div>
-
-        {/* Local Inquiries History Slide Out / Overlay */}
+        {/* Selected Service Context Alert */}
         <AnimatePresence>
-          {showHistory && (
+          {preselectedServices.length > 0 && (
             <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-8 bg-white p-6 md:p-8 border border-stone-200 overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="mb-8 inline-flex items-center gap-3 bg-stone-50 border border-stone-200 rounded-full px-4 py-1.5 text-xs text-stone-700"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h4 className="text-xs font-bold tracking-wider text-stone-900 uppercase">
-                  Your Submitted Inquiry Records (Local Device Only)
-                </h4>
-                <button 
-                  onClick={() => {
-                    localStorage.removeItem('krx_inquiries');
-                    setInquiries([]);
-                    setShowHistory(false);
-                  }}
-                  className="text-xs text-stone-400 hover:text-red-500 flex items-center gap-1 font-semibold uppercase tracking-wider"
-                >
-                  <Trash2 className="h-3 w-3" />
-                  Clear All History
-                </button>
-              </div>
-
-              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
-                {inquiries.map((inq) => (
-                  <div key={inq.id} className="p-4 bg-stone-50 border border-stone-200 flex flex-col md:flex-row md:items-start justify-between gap-4 text-xs">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-stone-900">{inq.name}</span>
-                        <span className="text-stone-400 font-semibold">•</span>
-                        <span className="text-stone-500">{inq.email}</span>
-                      </div>
-                      <div className="mt-1 font-bold text-stone-800">
-                        Subject: <span className="font-medium text-stone-600">{inq.subject}</span>
-                      </div>
-                      {inq.message && (
-                        <p className="mt-2 text-stone-500 leading-relaxed font-light italic">
-                          "{inq.message}"
-                        </p>
-                      )}
-                      {inq.services && inq.services.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-1.5">
-                          {inq.services.map(s => (
-                            <span key={s} className="bg-stone-200/60 text-stone-700 px-2 py-0.5 rounded text-[9px] font-bold">
-                              {s}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-right shrink-0">
-                      <span className="text-[10px] text-stone-400 block font-medium">
-                        {inq.date}
-                      </span>
-                      <button
-                        onClick={() => handleDeleteInquiry(inq.id)}
-                        className="text-[10px] text-red-400 hover:text-red-600 font-bold mt-2 hover:underline inline-block cursor-pointer"
-                      >
-                        Delete Record
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <span>Interested in: <span className="font-bold text-stone-900">{preselectedServices[0]}</span></span>
+              <button 
+                onClick={onClearPreselectedServices}
+                className="text-[10px] uppercase font-bold text-stone-400 hover:text-stone-900 ml-1 underline cursor-pointer"
+              >
+                Clear
+              </button>
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Primary Email Link */}
+        <div className="mb-10">
+          <a 
+            href={mailtoUrl}
+            className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-stone-900 hover:text-terracotta transition-colors tracking-tight font-mono inline-block border-b-2 border-stone-950/10 hover:border-terracotta pb-1"
+          >
+            {emailAddress}
+          </a>
+        </div>
+
+        {/* Action Links */}
+        <div className="flex items-center justify-center gap-6 text-xs font-bold tracking-[0.2em] uppercase">
+          <a 
+            href={mailtoUrl}
+            className="text-stone-800 hover:text-terracotta transition-colors flex items-center gap-1 cursor-pointer py-2"
+          >
+            <span>Send Email</span>
+            <ArrowUpRight className="h-4 w-4" />
+          </a>
+          
+          <span className="text-stone-300">|</span>
+          
+          <button 
+            onClick={handleCopy}
+            className="text-stone-800 hover:text-terracotta transition-colors cursor-pointer py-2 flex items-center gap-1.5"
+          >
+            {copied ? (
+              <span className="text-emerald-600">Copied</span>
+            ) : (
+              <span>Copy Address</span>
+            )}
+          </button>
+        </div>
+
+        <p className="text-[11px] text-stone-400 font-medium mt-12 uppercase tracking-wider">
+          Direct Specialist Inbox • No automated queues
+        </p>
+
       </div>
     </section>
   );
