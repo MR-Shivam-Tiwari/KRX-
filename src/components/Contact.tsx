@@ -8,7 +8,7 @@ interface ContactProps {
 }
 
 export default function Contact({ preselectedServices, onClearPreselectedServices }: ContactProps) {
-  const emailAddress = "partners@krx.com";
+  const emailAddress = "info@krxservices.com";
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
